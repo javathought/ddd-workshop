@@ -5,19 +5,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.math.BigDecimal;
+public strictfp class Amount {
 
-public class Amount {
-
-    private BigDecimal value;
+    private Double value;
     private Currency currency;
 
-    public Amount(BigDecimal value, Currency currency) {
+    public Amount(Double value, Currency currency) {
         this.value = value;
         this.currency = currency;
     }
 
-    public BigDecimal value() {
+    public Double value() {
         return value;
     }
 
@@ -39,12 +37,9 @@ public class Amount {
         Amount amount = (Amount) o;
 
         return new EqualsBuilder()
-                .append(value.doubleValue(), amount.value.doubleValue())
+                .append(value, amount.value)
                 .append(currency, amount.currency)
                 .isEquals();
-        // BigDecimal.equals : only if they are equal in
-        // * value and scale (thus 2.0 is not equal to 2.00)
-        // comparaison attendue : fonctionnelle
     }
 
     @Override

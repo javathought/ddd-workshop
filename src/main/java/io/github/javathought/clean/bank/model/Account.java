@@ -4,14 +4,12 @@ import io.github.javathought.clean.bank.model.exceptions.OperationRefusedExcepti
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.math.BigDecimal;
-
-public class Account {
-    private BigDecimal balance;
+public strictfp class Account {
+    private Double balance;
     private final Amount.Currency currency;
 
     public Account(Amount.Currency currency) {
-        this.balance = BigDecimal.ZERO;
+        this.balance = 0.0;
         this.currency = currency;
     }
 
@@ -23,7 +21,7 @@ public class Account {
         if (deposit.currency() != this.currency) {
             throw new OperationRefusedException(String.format("Account currency is %S", currency));
         }
-        balance = balance.add(deposit.value());
+        balance = balance + deposit.value();
     }
 
     @Override
