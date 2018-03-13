@@ -1,0 +1,3 @@
+# Clean Bank
+
+> A personal project for reflection on DDD, clean code, ...
