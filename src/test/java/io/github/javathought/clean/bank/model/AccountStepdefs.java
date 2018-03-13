@@ -1,5 +1,6 @@
 package io.github.javathought.clean.bank.model;
 
+import cucumber.api.PendingException;
 import cucumber.api.java8.En;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 
@@ -32,5 +33,21 @@ public class AccountStepdefs implements En {
             }
         });
         Then("^l'opération est refusée$", () -> assertThat(operationAccepted).isFalse());
+        When("^je consulte le compte 'A(\\d+)'$", (Integer arg0) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
+        Then("^la taille de l'historique est (\\d+)$", (Integer arg0) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
+        And("^la dernière opération est de (\\d+) EUR$", (Integer arg0) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
+        And("^l'opération précédente est de (\\d+),(\\d+) EUR$", (Integer arg0, Integer arg1) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
     }
 }
