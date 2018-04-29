@@ -1,7 +1,9 @@
 #language: fr
 # les nombres doivent respecter les séparateurs français
 
-Fonctionnalité: gestion des comptes bancaires
+Fonctionnalité: Création de comptes bancaires et opérations de dépot
+  En tant que client je veux pouvoir ouvrir un compte
+  afin d'y déposer de l'argent
 
   Scénario: un compte est créé avec un solde à zéro
     Quand je crée le compte 'A0001' en EUR
