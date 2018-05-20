@@ -1,5 +1,6 @@
 package io.github.javathought.clean.bank.model;
 
+import cucumber.api.PendingException;
 import cucumber.api.java8.En;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.operations.Operation;
@@ -20,7 +21,7 @@ public class AccountStepdefs implements En {
     public AccountStepdefs() {
         When("^je crée le compte '(.*)' en (.+)$", (String accountNumber, String currency) ->
                 accountStore.put(accountNumber, new Account(Amount.Currency.valueOf(currency))));
-        Then("^le solde du compte '(.*)' est (\\d+,\\d+) (.+)$",
+        Then("^le solde du compte '(.*)' est (-?\\d+,\\d+) (.+)$",
                 (String accountNumber, BigDecimal balance, String currency) ->
                 assertThat(accountStore.get(accountNumber).balance())
                         .isEqualTo(new Amount(balance, Amount.Currency.valueOf(currency)))
@@ -52,5 +53,13 @@ public class AccountStepdefs implements En {
                     .hasFieldOrPropertyWithValue("amount.value", value)
                     .hasFieldOrPropertyWithValue("amount.currency", Amount.Currency.valueOf(currency))
         );
+        When("^je retire (\\d+,\\d+) (.+) sur le compte '(.+)'$", (BigDecimal withdrawal, String currency, String accountNumber) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
+        When("^le découvert autorisé du compte '(.+)' est de (\\d+,\\d+)$", (String accountNumber, BigDecimal overdraftLimit) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
     }
 }
