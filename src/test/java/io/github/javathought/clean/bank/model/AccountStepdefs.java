@@ -1,6 +1,5 @@
 package io.github.javathought.clean.bank.model;
 
-import cucumber.api.PendingException;
 import cucumber.api.java8.En;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.operations.Operation;
@@ -23,43 +22,47 @@ public class AccountStepdefs implements En {
                 accountStore.put(accountNumber, new Account(Amount.Currency.valueOf(currency))));
         Then("^le solde du compte '(.*)' est (-?\\d+,\\d+) (.+)$",
                 (String accountNumber, BigDecimal balance, String currency) ->
-                assertThat(accountStore.get(accountNumber).balance())
-                        .isEqualTo(new Amount(balance, Amount.Currency.valueOf(currency)))
+                        assertThat(accountStore.get(accountNumber).balance())
+                                .isEqualTo(new Amount(balance, Amount.Currency.valueOf(currency)))
         );
         When("^je dépose (\\d+,\\d+) (.+) sur le compte '(.+)'$",
                 (BigDecimal deposit, String currency, String accountNumber) -> {
-            try {
-                accountStore.get(accountNumber).deposit(new Amount(deposit, Amount.Currency.valueOf(currency)));
-                operationAccepted = true;
-            } catch (OperationRefusedException e) {
-                operationAccepted = false;
-            }
-        });
+                    try {
+                        accountStore.get(accountNumber).deposit(new Amount(deposit, Amount.Currency.valueOf(currency)));
+                        operationAccepted = true;
+                    } catch (OperationRefusedException e) {
+                        operationAccepted = false;
+                    }
+                });
         Then("^l'opération est refusée$", () -> assertThat(operationAccepted).isFalse());
         Then("^l'opération est acceptée", () -> assertThat(operationAccepted).isTrue());
         When("^je consulte le compte '(.+)'$", (String accountNum) ->
-            histo = accountStore.get(accountNum).operations());
+                histo = accountStore.get(accountNum).operations());
         Then("^la taille de l'historique est (\\d+)$", (Integer arg0) -> {
             assertThat(histo.size()).isEqualTo(arg0);
             histoIterator = histo.iterator();
         });
         And("^la dernière opération est de (\\d+,\\d+) (.+)$", (BigDecimal value, String currency) ->
                 assertThat(histoIterator.next())
-                .extracting("amount.value", "amount.currency")
-                .contains(value, Amount.Currency.valueOf(currency))
+                        .extracting("amount.value", "amount.currency")
+                        .contains(value, Amount.Currency.valueOf(currency))
         );
         And("^l'opération précédente est de (\\d+,\\d+) (.+)$", (BigDecimal value, String currency) ->
-            assertThat(histoIterator.next())
-                    .hasFieldOrPropertyWithValue("amount.value", value)
-                    .hasFieldOrPropertyWithValue("amount.currency", Amount.Currency.valueOf(currency))
+                assertThat(histoIterator.next())
+                        .hasFieldOrPropertyWithValue("amount.value", value)
+                        .hasFieldOrPropertyWithValue("amount.currency", Amount.Currency.valueOf(currency))
         );
-        When("^je retire (\\d+,\\d+) (.+) sur le compte '(.+)'$", (BigDecimal withdrawal, String currency, String accountNumber) -> {
-            // Write code here that turns the phrase above into concrete actions
-            throw new PendingException();
-        });
-        When("^le découvert autorisé du compte '(.+)' est de (\\d+,\\d+)$", (String accountNumber, BigDecimal overdraftLimit) -> {
-            // Write code here that turns the phrase above into concrete actions
-            throw new PendingException();
-        });
+        When("^je retire (\\d+,\\d+) (.+) sur le compte '(.+)'$",
+                (BigDecimal withdrawal, String currency, String accountNumber) -> {
+                    try {
+                        accountStore.get(accountNumber).withdraw(new Amount(withdrawal, Amount.Currency.valueOf(currency)));
+                        operationAccepted = true;
+                    } catch (OperationRefusedException e) {
+                        operationAccepted = false;
+                    }
+                });
+        When("^le découvert autorisé du compte '(.+)' est de (\\d+,\\d+)$",
+                (String accountNumber, BigDecimal overdraftLimit) ->
+                        accountStore.get(accountNumber).changeOverdraftLimit(overdraftLimit));
     }
 }
