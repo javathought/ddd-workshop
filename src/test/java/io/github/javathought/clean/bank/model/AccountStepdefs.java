@@ -15,7 +15,6 @@ public class AccountStepdefs implements En {
     private Iterator<Operation> histoIterator;
     private List<Operation> histo;
     private boolean operationAccepted;
-    private Account account;
 
     public AccountStepdefs() {
         When("^je crée le compte '(.*)' en (.+)$", (String accountNumber, String currency) ->

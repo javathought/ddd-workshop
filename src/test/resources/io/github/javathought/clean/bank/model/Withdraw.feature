@@ -14,11 +14,11 @@ Fonctionnalité: Création de comptes bancaires et opérations de retrait
     Quand je retire 9,5 EUR sur le compte 'D0001'
     Alors le solde du compte 'D0001' est 1090,5 EUR
 
-  Scénario: un retrait supérieur au solde est interdit
+  Scénario: un retrait faisant dépasser le découvert autorisé est interdit
     Quand je retire 1200,00 EUR sur le compte 'D0001'
     Alors l'opération est refusée
 
-  Scénario: un retrait ne faisant pas dépassé le découvert autorisé est accepté
+  Scénario: un retrait ne faisant pas dépasser le découvert autorisé est accepté
     Quand le découvert autorisé du compte 'D0001' est de 150,0
     Et je retire 1200,00 EUR sur le compte 'D0001'
     Alors l'opération est acceptée
