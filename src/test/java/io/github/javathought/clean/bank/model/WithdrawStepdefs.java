@@ -2,9 +2,14 @@ package io.github.javathought.clean.bank.model;
 
 import cucumber.api.PendingException;
 import cucumber.api.java8.En;
+import cucumber.api.java8.Tr;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
+import io.github.javathought.clean.bank.model.operations.Operation;
+import io.github.javathought.clean.bank.model.operations.Transfer;
 
 import java.math.BigDecimal;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class WithdrawStepdefs implements En {
     private final GenericState state;
@@ -16,17 +21,17 @@ public class WithdrawStepdefs implements En {
         When("^je transfère (\\d+,\\d+) (.+) du compte '(.+)' vers le compte '(.+)'$",
                 (BigDecimal amount, String currency, String originAccount, String destinationAccount) -> {
             try {
-                accountStore.get(originAccount)
+                Transfer tx = accountStore.get(originAccount)
                         .transfer(new Amount(amount, Amount.Currency.valueOf(currency)), destinationAccount);
                 state.operationAccepted = true;
+                state.currentOperation = tx;
             } catch (OperationRefusedException e) {
                 state.operationAccepted = false;
             }
         });
-        When("^l'opération est en attente$", () -> {
-            // Write code here that turns the phrase above into concrete actions
-            throw new PendingException();
-        });
+        When("^l'opération est en attente$", () ->
+            assertThat(state.currentOperation.state()).isEqualTo(Operation.State.PENDING)
+        );
         When("^l'opération est annulée$", () -> {
             // Write code here that turns the phrase above into concrete actions
             throw new PendingException();

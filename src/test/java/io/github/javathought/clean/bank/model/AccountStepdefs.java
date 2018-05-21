@@ -17,11 +17,11 @@ public class AccountStepdefs implements En {
     private List<Operation> histo;
     private GenericState state;
 
-    public AccountStepdefs(GenericState state, AccountStore accountStore) {
+    public AccountStepdefs(GenericState state, AccountStore accountStore, Bank bank) {
         this.state = state;
         this.accountStore = accountStore;
         When("^je crée le compte '(.*)' en (.+)$", (String accountNumber, String currency) ->
-                accountStore.put(accountNumber, new Account(Amount.Currency.valueOf(currency))));
+                accountStore.put(accountNumber, new Account(Amount.Currency.valueOf(currency), bank)));
         Then("^le solde du compte '(.*)' est (-?\\d+,\\d+) (.+)$",
                 (String accountNumber, BigDecimal balance, String currency) ->
                         assertThat(accountStore.get(accountNumber).balance())

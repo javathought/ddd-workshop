@@ -16,11 +16,10 @@ Fonctionnalité: Création de comptes bancaires et opérations de transfert
     Quand je transfère 1300,00 EUR du compte 'T0001' vers le compte 'C0001'
     Alors l'opération est refusée
 
-#  Scénario: un transfert vers un compte est en attente de réponse de la banque destinatrice
-#    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
-#    Alors l'opération est en attente
-#    Alors l'opération est annulée
-#
+  Scénario: un transfert vers un compte est en attente de réponse de la banque destinatrice
+    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
+    Alors l'opération est en attente
+
 #  Scénario: un transfert vers un compte inexistant est annulé
 #    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'I0001'
 #    Et l'opération est en attente

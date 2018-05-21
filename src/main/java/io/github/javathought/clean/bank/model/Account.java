@@ -3,6 +3,7 @@ package io.github.javathought.clean.bank.model;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.operations.Deposit;
 import io.github.javathought.clean.bank.model.operations.Operation;
+import io.github.javathought.clean.bank.model.operations.Transfer;
 import io.github.javathought.clean.bank.model.operations.Withdrawal;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -12,16 +13,20 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Account {
+    private final Bank bank;
     private BigDecimal balance;
     private final Amount.Currency currency;
     private List<Operation> operations;
+    private List<Operation> pendingOperations;
     private BigDecimal overdraftLimit;
 
-    public Account(Amount.Currency currency) {
+    public Account(Amount.Currency currency, Bank bank) {
+        this.bank = bank;
         this.balance = BigDecimal.ZERO;
         this.overdraftLimit = BigDecimal.ZERO;
         this.currency = currency;
         this.operations = new CopyOnWriteArrayList<>();
+        this.pendingOperations = new CopyOnWriteArrayList<>();
     }
 
     public Amount balance() {
@@ -61,12 +66,15 @@ public class Account {
         return overdraftLimit;
     }
 
-    public void transfer(Amount amount, String destinationAccount) throws OperationRefusedException {
+    public Transfer transfer(Amount amount, String destinationAccount) throws OperationRefusedException {
         checkCurrency(amount);
         checkOverdraft(amount);
-        // TODO : implement full feature
-        throw new UnsupportedOperationException(String.format("Transfer to %s not supported", destinationAccount));
+        Transfer transfer = new Transfer(amount, destinationAccount);
+        pendingOperations.add(0, transfer);
+        balance = balance.subtract(amount.value());
 
+        bank.transfer(transfer);
+        return transfer;
     }
 
     private void checkCurrency(Amount deposit) throws OperationRefusedException {
