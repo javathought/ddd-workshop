@@ -13,24 +13,24 @@ Fonctionnalité: Création de comptes bancaires et opérations de transfert
     Et le solde du compte 'C0001' est 0,0 EUR
 
   Scénario: un transfert faisant dépasser le découvert autorisé est interdit
-    Quand je transfère 1200,00 EUR du compte 'T0001' vers le compte 'C0001'
+    Quand je transfère 1300,00 EUR du compte 'T0001' vers le compte 'C0001'
     Alors l'opération est refusée
 
-  Scénario: un transfert vers un compte est en attente de réponse de la banque destinatrice
-    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
-    Alors l'opération est en attente
-    Alors l'opération est annulée
-
-  Scénario: un transfert vers un compte inexistant est annulé
-    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'I0001'
-    Et l'opération est en attente
-    Et la banque destinatrice renvoie la réponse négative 'Compte inexistant'
-    Alors l'opération est annulée
-
-  Scénario: un transfert vers un compte existant est exécuté
-    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
-    Et l'opération est en attente
-    Et la banque destinatrice renvoie la réponse 'Opération exécutée'
-    Alors l'opération est acceptée
-    Et le solde du compte 'T0001' est 1000,00 EUR
+#  Scénario: un transfert vers un compte est en attente de réponse de la banque destinatrice
+#    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
+#    Alors l'opération est en attente
+#    Alors l'opération est annulée
+#
+#  Scénario: un transfert vers un compte inexistant est annulé
+#    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'I0001'
+#    Et l'opération est en attente
+#    Et la banque destinatrice renvoie la réponse négative 'Compte inexistant'
+#    Alors l'opération est annulée
+#
+#  Scénario: un transfert vers un compte existant est exécuté
+#    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
+#    Et l'opération est en attente
+#    Et la banque destinatrice renvoie la réponse 'Opération exécutée'
+#    Alors l'opération est acceptée
+#    Et le solde du compte 'T0001' est 1000,00 EUR
 

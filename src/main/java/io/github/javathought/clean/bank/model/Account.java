@@ -29,20 +29,14 @@ public class Account {
     }
 
     public void deposit(Amount deposit) throws OperationRefusedException {
-        if (deposit.currency() != this.currency) {
-            throw new OperationRefusedException(String.format("Account currency is %s", currency));
-        }
+        checkCurrency(deposit);
         operations.add(0, new Deposit(deposit));
         balance = balance.add(deposit.value());
     }
 
     public void withdraw(Amount withdrawal) throws OperationRefusedException {
-        if (withdrawal.currency() != this.currency) {
-            throw new OperationRefusedException(String.format("Account currency is %s", currency));
-        }
-        if (balance.subtract(withdrawal.value()).compareTo(overdraftLimit.negate()) < 0) {
-            throw new OperationRefusedException("Insufficient balance");
-        }
+        checkCurrency(withdrawal);
+        checkOverdraft(withdrawal);
         operations.add(0, new Withdrawal(withdrawal));
         balance = balance.subtract(withdrawal.value());
     }
@@ -66,4 +60,25 @@ public class Account {
     public BigDecimal getOverdraftLimit() {
         return overdraftLimit;
     }
+
+    public void transfer(Amount amount, String destinationAccount) throws OperationRefusedException {
+        checkCurrency(amount);
+        checkOverdraft(amount);
+        // TODO : implement full feature
+        throw new UnsupportedOperationException(String.format("Transfer to %s not supported", destinationAccount));
+
+    }
+
+    private void checkCurrency(Amount deposit) throws OperationRefusedException {
+        if (deposit.currency() != this.currency) {
+            throw new OperationRefusedException(String.format("Account currency is %s", currency));
+        }
+    }
+
+    private void checkOverdraft(Amount withdrawal) throws OperationRefusedException {
+        if (balance.subtract(withdrawal.value()).compareTo(overdraftLimit.negate()) < 0) {
+            throw new OperationRefusedException("Insufficient balance");
+        }
+    }
+
 }

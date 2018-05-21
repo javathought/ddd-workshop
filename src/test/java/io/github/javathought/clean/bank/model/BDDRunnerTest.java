@@ -8,6 +8,6 @@ import org.junit.runner.RunWith;
 @CucumberOptions(strict = false,
         plugin = { "pretty",
         "json:target/cucumber.json" },
-        tags = { "~@ignore" })
+        tags = { "not @ignore" })
 public class BDDRunnerTest {
 }
