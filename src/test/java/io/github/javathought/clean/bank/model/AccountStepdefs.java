@@ -1,6 +1,5 @@
 package io.github.javathought.clean.bank.model;
 
-import cucumber.api.PendingException;
 import cucumber.api.java8.En;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.operations.Operation;
@@ -12,14 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AccountStepdefs implements En {
 
-    private AccountStore accountStore;
     private Iterator<Operation> histoIterator;
     private List<Operation> histo;
-    private GenericState state;
 
-    public AccountStepdefs(GenericState state, AccountStore accountStore, Bank bank) {
-        this.state = state;
-        this.accountStore = accountStore;
+    public AccountStepdefs(TestWorldState state, AccountStore accountStore, Bank bank) {
         When("^je crée le compte '(.*)' en (.+)$", (String accountNumber, String currency) ->
                 accountStore.put(accountNumber, new Account(Amount.Currency.valueOf(currency), bank)));
         Then("^le solde du compte '(.*)' est (-?\\d+,\\d+) (.+)$",

@@ -20,16 +20,32 @@ Fonctionnalité: Création de comptes bancaires et opérations de transfert
     Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
     Alors l'opération est en attente
 
-#  Scénario: un transfert vers un compte inexistant est annulé
-#    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'I0001'
-#    Et l'opération est en attente
-#    Et la banque destinatrice renvoie la réponse négative 'Compte inexistant'
-#    Alors l'opération est annulée
-#
-#  Scénario: un transfert vers un compte existant est exécuté
-#    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
-#    Et l'opération est en attente
-#    Et la banque destinatrice renvoie la réponse 'Opération exécutée'
-#    Alors l'opération est acceptée
-#    Et le solde du compte 'T0001' est 1000,00 EUR
+  Scénario: un transfert vers un compte inexistant est annulé
+    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'I0001'
+    Alors l'opération est en attente
+    Et le solde du compte 'T0001' est 1000,00 EUR
+    Quand je consulte le compte 'T0001'
+    Alors la taille de l'historique est 1
+    Et la dernière opération est de 1100,0 EUR
+    Quand la banque destinatrice renvoie la réponse négative 'Compte inexistant'
+    Et je consulte le compte 'T0001'
+    Alors la taille de l'historique est 3
+    Et la dernière opération est de 100,0 EUR
+    Et l'opération précédente est de 100,0 EUR
+    Et l'opération précédente est de 1100,0 EUR
+    Et le solde du compte 'T0001' est 1100,00 EUR
+
+  Scénario: un transfert vers un compte existant est exécuté
+    Quand je transfère 100,00 EUR du compte 'T0001' vers le compte 'C0001'
+    Alors l'opération est en attente
+    Et le solde du compte 'T0001' est 1000,00 EUR
+    Quand je consulte le compte 'T0001'
+    Alors la taille de l'historique est 1
+    Et la dernière opération est de 1100,0 EUR
+    Quand la banque destinatrice renvoie la réponse 'Opération exécutée'
+    Et je consulte le compte 'T0001'
+    Alors la taille de l'historique est 2
+    Et la dernière opération est de 100,0 EUR
+    Et l'opération précédente est de 1100,0 EUR
+    Et le solde du compte 'T0001' est 1000,00 EUR
 

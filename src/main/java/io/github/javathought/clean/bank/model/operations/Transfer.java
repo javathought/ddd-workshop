@@ -2,7 +2,9 @@ package io.github.javathought.clean.bank.model.operations;
 
 import io.github.javathought.clean.bank.model.Amount;
 
-public class Transfer extends Operation {
+import static io.github.javathought.clean.bank.model.operations.OperationType.CREDIT;
+
+public class Transfer extends TransactionalOperation {
     private final String creditedAccount;
 
     public Transfer(Amount amountValue, String destinationAccount) {
@@ -12,5 +14,10 @@ public class Transfer extends Operation {
 
     public String creditedAccount() {
         return creditedAccount;
+    }
+
+    @Override
+    public Revert revert(String motif) {
+        return new Revert(this.amount(), CREDIT, this, motif);
     }
 }

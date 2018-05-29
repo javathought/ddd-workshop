@@ -4,18 +4,26 @@ import io.github.javathought.clean.bank.model.Amount;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 import static io.github.javathought.clean.bank.model.operations.Operation.State.PENDING;
 
 public abstract class Operation {
+    private final UUID id;
     private final Date date;
     private final Amount amount;
     private final State state;
 
     Operation(Amount amountValue) {
+        assert amountValue != null;
+        id = UUID.randomUUID();
         this.date = Date.from(Instant.now());
         this.amount = amountValue;
         this.state = PENDING;
+    }
+
+    public UUID id() {
+        return id;
     }
 
     public Date date() {

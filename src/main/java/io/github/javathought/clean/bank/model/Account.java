@@ -1,15 +1,15 @@
 package io.github.javathought.clean.bank.model;
 
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
-import io.github.javathought.clean.bank.model.operations.Deposit;
-import io.github.javathought.clean.bank.model.operations.Operation;
-import io.github.javathought.clean.bank.model.operations.Transfer;
-import io.github.javathought.clean.bank.model.operations.Withdrawal;
+import io.github.javathought.clean.bank.model.operations.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Account {
@@ -17,16 +17,18 @@ public class Account {
     private BigDecimal balance;
     private final Amount.Currency currency;
     private List<Operation> operations;
-    private List<Operation> pendingOperations;
+    private Map<UUID, TransactionalOperation> pendingOperations;
     private BigDecimal overdraftLimit;
 
     public Account(Amount.Currency currency, Bank bank) {
+        assert currency != null;
+        assert bank != null;
         this.bank = bank;
         this.balance = BigDecimal.ZERO;
         this.overdraftLimit = BigDecimal.ZERO;
         this.currency = currency;
         this.operations = new CopyOnWriteArrayList<>();
-        this.pendingOperations = new CopyOnWriteArrayList<>();
+        this.pendingOperations = new ConcurrentHashMap<>();
     }
 
     public Amount balance() {
@@ -35,14 +37,14 @@ public class Account {
 
     public void deposit(Amount deposit) throws OperationRefusedException {
         checkCurrency(deposit);
-        operations.add(0, new Deposit(deposit));
+        addOperation(new Deposit(deposit));
         balance = balance.add(deposit.value());
     }
 
     public void withdraw(Amount withdrawal) throws OperationRefusedException {
         checkCurrency(withdrawal);
         checkOverdraft(withdrawal);
-        operations.add(0, new Withdrawal(withdrawal));
+        addOperation(new Withdrawal(withdrawal));
         balance = balance.subtract(withdrawal.value());
     }
 
@@ -70,7 +72,7 @@ public class Account {
         checkCurrency(amount);
         checkOverdraft(amount);
         Transfer transfer = new Transfer(amount, destinationAccount);
-        pendingOperations.add(0, transfer);
+        pendingOperations.put(transfer.id(), transfer);
         balance = balance.subtract(amount.value());
 
         bank.transfer(transfer);
@@ -87,6 +89,48 @@ public class Account {
         if (balance.subtract(withdrawal.value()).compareTo(overdraftLimit.negate()) < 0) {
             throw new OperationRefusedException("Insufficient balance");
         }
+    }
+
+    public void processResponse(TransactionalOperation currentOperation, OperationResponse response, String motif) {
+        TransactionalOperation pending = pendingOperations.get(currentOperation.id());
+        if (noSuchPendingOperation(currentOperation, pending)) {
+            // TODO : bank should return reponse
+            ;
+        } else {
+            applyResponse(currentOperation, response, motif);
+        }
+
+    }
+
+    private void applyResponse(TransactionalOperation currentOperation, OperationResponse response, String motif) {
+        removeOperationFromPending(currentOperation);
+        if (! response.equals(OperationResponse.PROCESSED)) {
+            revertOperation(currentOperation, motif);
+        }
+    }
+
+    private void revertOperation(TransactionalOperation currentOperation, String motif) {
+        Revert revert = currentOperation.revert(motif);
+        addOperation(revert);
+        OperationType type = revert.type();
+        if (type == OperationType.CREDIT) {
+            balance = balance.add(revert.amount().value());
+        } else if (type == OperationType.DEBIT) {
+            balance = balance.subtract(revert.amount().value());
+        }
+    }
+
+    private void removeOperationFromPending(TransactionalOperation currentOperation) {
+        pendingOperations.remove(currentOperation.id());
+        addOperation(currentOperation);
+    }
+
+    private boolean noSuchPendingOperation(TransactionalOperation currentOperation, TransactionalOperation pending) {
+        return pending == null || !pending.equals(currentOperation);
+    }
+
+    private void addOperation(Operation operation) {
+        operations.add(0, operation);
     }
 
 }
