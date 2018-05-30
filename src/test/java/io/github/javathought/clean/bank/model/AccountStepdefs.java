@@ -26,7 +26,7 @@ public class AccountStepdefs implements En {
         When("^je dépose (\\d+,\\d+) (.+) sur le compte '(.+)'$",
                 (BigDecimal deposit, String currency, String accountNumber) -> {
                     try {
-                        accountStore.get(accountNumber).deposit(new Amount(deposit, Amount.Currency.valueOf(currency)));
+                        state.currentOperation = accountStore.get(accountNumber).deposit(new Amount(deposit, Amount.Currency.valueOf(currency)));
                         state.operationAccepted = true;
                     } catch (OperationRefusedException e) {
                         state.operationAccepted = false;
@@ -53,7 +53,7 @@ public class AccountStepdefs implements En {
         When("^je retire (\\d+,\\d+) (.+) sur le compte '(.+)'$",
                 (BigDecimal withdrawal, String currency, String accountNumber) -> {
                     try {
-                        accountStore.get(accountNumber).withdraw(new Amount(withdrawal, Amount.Currency.valueOf(currency)));
+                        state.currentOperation = accountStore.get(accountNumber).withdraw(new Amount(withdrawal, Amount.Currency.valueOf(currency)));
                         state.operationAccepted = true;
                     } catch (OperationRefusedException e) {
                         state.operationAccepted = false;

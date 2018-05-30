@@ -35,29 +35,27 @@ public class Account {
         return new Amount(balance, currency);
     }
 
-    public void deposit(Amount deposit) throws OperationRefusedException {
+    public Deposit deposit(Amount deposit) throws OperationRefusedException {
         checkCurrency(deposit);
-        addOperation(new Deposit(deposit));
+        Deposit operation = new Deposit(deposit);
+        addOperation(operation);
         balance = balance.add(deposit.value());
+        operation.hasBeenExecuted();
+        return operation;
     }
 
-    public void withdraw(Amount withdrawal) throws OperationRefusedException {
+    public Withdrawal withdraw(Amount withdrawal) throws OperationRefusedException {
         checkCurrency(withdrawal);
         checkOverdraft(withdrawal);
-        addOperation(new Withdrawal(withdrawal));
+        Withdrawal operation = new Withdrawal(withdrawal);
+        addOperation(operation);
         balance = balance.subtract(withdrawal.value());
+        operation.hasBeenExecuted();
+        return operation;
     }
 
     public List<Operation> operations() {
         return operations;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("balance", balance)
-                .append("currency", currency)
-                .toString();
     }
 
     public void changeOverdraftLimit(BigDecimal overdraftLimit) {
@@ -104,7 +102,9 @@ public class Account {
 
     private void applyResponse(TransactionalOperation currentOperation, OperationResponse response, String motif) {
         removeOperationFromPending(currentOperation);
-        if (! response.equals(OperationResponse.PROCESSED)) {
+        if (response.equals(OperationResponse.PROCESSED)) {
+            currentOperation.hasBeenExecuted();
+        } else {
             revertOperation(currentOperation, motif);
         }
     }
@@ -118,10 +118,13 @@ public class Account {
         } else if (type == OperationType.DEBIT) {
             balance = balance.subtract(revert.amount().value());
         }
+        currentOperation.hasBeenReverted();
+        revert.hasBeenExecuted();
     }
 
     private void removeOperationFromPending(TransactionalOperation currentOperation) {
         pendingOperations.remove(currentOperation.id());
+        currentOperation.hasBeenExecuted();
         addOperation(currentOperation);
     }
 
@@ -131,6 +134,14 @@ public class Account {
 
     private void addOperation(Operation operation) {
         operations.add(0, operation);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
+                .append("balance", balance)
+                .append("currency", currency)
+                .toString();
     }
 
 }

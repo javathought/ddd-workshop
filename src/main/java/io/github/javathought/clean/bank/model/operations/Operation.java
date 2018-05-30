@@ -6,13 +6,14 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
+import static io.github.javathought.clean.bank.model.operations.Operation.State.EXECUTED;
 import static io.github.javathought.clean.bank.model.operations.Operation.State.PENDING;
 
 public abstract class Operation {
     private final UUID id;
     private final Date date;
     private final Amount amount;
-    private final State state;
+    protected State state;
 
     Operation(Amount amountValue) {
         assert amountValue != null;
@@ -34,6 +35,10 @@ public abstract class Operation {
 
     public State state() {
         return state;
+    }
+
+    public void hasBeenExecuted() {
+        this.state = EXECUTED;
     }
 
     public enum State {
