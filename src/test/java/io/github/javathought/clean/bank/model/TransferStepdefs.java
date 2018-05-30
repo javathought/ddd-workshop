@@ -37,5 +37,14 @@ public class TransferStepdefs implements En {
             assertThat(state.currentOperation.state()).isEqualTo(Operation.State.REVERTED));
         Then("^l'opération est au statut exécuté$", () ->
             assertThat(state.currentOperation.state()).isEqualTo(Operation.State.EXECUTED));
+        When("^je reçois de la banque '(.*)' un transfert de (\\d+,\\d+) (.*) pour le compte '(.*)'$",
+                (String senderBank, BigDecimal amount, String currency, String destinationAccount) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
+        Then("^un rejet de l'opération est renvoyé à la banque émettrice '(.*)'$", (String senderBank) -> {
+            // Write code here that turns the phrase above into concrete actions
+            throw new PendingException();
+        });
     }
 }
