@@ -38,6 +38,7 @@ public abstract class Operation {
 
     public enum State {
         PENDING,
-        EXECUTED
+        EXECUTED,
+        REVERTED
     }
 }

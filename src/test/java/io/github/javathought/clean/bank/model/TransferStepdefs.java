@@ -26,12 +26,16 @@ public class TransferStepdefs implements En {
                 state.operationAccepted = false;
             }
         });
-        When("^l'opération est en attente$", () ->
+        When("^l'opération est au statut en attente$", () ->
             assertThat(state.currentOperation.state()).isEqualTo(Operation.State.PENDING)
         );
         And("^la banque destinatrice renvoie la réponse négative '(.*)'$", (String motif) ->
                 bank.receiveResponse(state.currentAccount, (TransactionalOperation) state.currentOperation, OperationResponse.REFUSED, motif));
         And("^la banque destinatrice renvoie la réponse 'Opération exécutée'$", () ->
                 bank.receiveResponse(state.currentAccount, (TransactionalOperation) state.currentOperation, OperationResponse.PROCESSED, null));
+        Then("^l'opération est au statut annulé$", () ->
+            assertThat(state.currentOperation.state()).isEqualTo(Operation.State.REVERTED));
+        Then("^l'opération est au statut exécuté$", () ->
+            assertThat(state.currentOperation.state()).isEqualTo(Operation.State.EXECUTED));
     }
 }
