@@ -1,17 +1,22 @@
 package io.github.javathought.clean.bank.model;
 
-import cucumber.api.PendingException;
 import cucumber.api.java8.En;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
+import io.github.javathought.clean.bank.model.messages.MessageStatus;
+import io.github.javathought.clean.bank.model.messages.OperationMessage;
+import io.github.javathought.clean.bank.model.messages.RejectReason;
 import io.github.javathought.clean.bank.model.operations.Operation;
 import io.github.javathought.clean.bank.model.operations.TransactionalOperation;
 import io.github.javathought.clean.bank.model.operations.Transfer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransferStepdefs implements En {
+    private static final Logger LOG = LoggerFactory.getLogger(TransferStepdefs.class);
 
     public TransferStepdefs(TestWorldState state, HashMapAccountStore accountStore, Bank bank) {
         When("^je transfère (\\d+,\\d+) (.+) du compte '(.+)' vers le compte '(.+)'$",
@@ -30,21 +35,20 @@ public class TransferStepdefs implements En {
             assertThat(state.currentOperation.state()).isEqualTo(Operation.State.PENDING)
         );
         And("^la banque destinatrice renvoie la réponse négative '(.*)'$", (String motif) ->
-                bank.receiveResponse(state.currentAccount, (TransactionalOperation) state.currentOperation, OperationResponse.REFUSED, motif));
+                bank.receiveResponse(state.currentAccount, (TransactionalOperation) state.currentOperation, MessageStatus.OperationResponse.REJECTED, motif));
         And("^la banque destinatrice renvoie la réponse 'Opération exécutée'$", () ->
-                bank.receiveResponse(state.currentAccount, (TransactionalOperation) state.currentOperation, OperationResponse.PROCESSED, null));
+                bank.receiveResponse(state.currentAccount, (TransactionalOperation) state.currentOperation, MessageStatus.OperationResponse.PROCESSED, null));
         Then("^l'opération est au statut annulé$", () ->
             assertThat(state.currentOperation.state()).isEqualTo(Operation.State.REVERTED));
         Then("^l'opération est au statut exécuté$", () ->
             assertThat(state.currentOperation.state()).isEqualTo(Operation.State.EXECUTED));
         When("^je reçois de la banque '(.*)' un transfert de (\\d+,\\d+) (.*) pour le compte '(.*)'$",
-                (String senderBank, BigDecimal amount, String currency, String destinationAccount) -> {
-            // Write code here that turns the phrase above into concrete actions
-            throw new PendingException();
-        });
+                (String senderBank, BigDecimal amount, String currency, String destinationAccount) ->
+            bank.receiveTransfer(new Amount(amount, Amount.Currency.valueOf(currency)), destinationAccount, senderBank, null));
         Then("^un rejet de l'opération est renvoyé à la banque émettrice '(.*)'$", (String senderBank) -> {
-            // Write code here that turns the phrase above into concrete actions
-            throw new PendingException();
+            LOG.error("messages = {}", bank);
+            assertThat(bank.messages())
+                    .contains(new OperationMessage(senderBank, MessageStatus.OperationResponse.REJECTED, RejectReason.NO_SUCH_ACCOUNT, null));
         });
     }
 }

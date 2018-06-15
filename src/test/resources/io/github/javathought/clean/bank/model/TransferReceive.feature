@@ -1,6 +1,4 @@
 #language: fr
-# les nombres doivent respecter les séparateurs français
-
 Fonctionnalité: Création de comptes bancaires et réception de transfert
   En tant que client je veux pouvoir recevoir des transferts d'argent sur mon compte
 
@@ -20,7 +18,7 @@ Fonctionnalité: Création de comptes bancaires et réception de transfert
     Et la dernière opération est de 1300,0 EUR
 
   Scénario: un transfert est reçu pour un compte inexistant
-    Quand je reçois de la banque 'BICEFRPPXXX' un transfert de 1300,00 EUR pour le compte 'T0001'
+    Quand je reçois de la banque 'BICEFRPPXXX' un transfert de 1300,00 EUR pour le compte 'I0001'
     Alors un rejet de l'opération est renvoyé à la banque émettrice 'BICEFRPPXXX'
 
 

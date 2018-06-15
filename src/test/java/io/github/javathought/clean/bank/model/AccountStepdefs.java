@@ -3,6 +3,7 @@ package io.github.javathought.clean.bank.model;
 import cucumber.api.java8.En;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.operations.Operation;
+import io.github.javathought.clean.bank.model.operations.OperationsList;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -12,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AccountStepdefs implements En {
 
     private Iterator<Operation> histoIterator;
-    private List<Operation> histo;
+    private OperationsList histo;
 
     public AccountStepdefs(TestWorldState state, AccountStore accountStore, Bank bank) {
         When("^je crée le compte '(.*)' en (.+)$", (String accountNumber, String currency) ->
