@@ -8,15 +8,12 @@ import io.github.javathought.clean.bank.model.messages.RejectReason;
 import io.github.javathought.clean.bank.model.operations.Operation;
 import io.github.javathought.clean.bank.model.operations.TransactionalOperation;
 import io.github.javathought.clean.bank.model.operations.Transfer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransferStepdefs implements En {
-    private static final Logger LOG = LoggerFactory.getLogger(TransferStepdefs.class);
 
     public TransferStepdefs(TestWorldState state, HashMapAccountStore accountStore, Bank bank) {
         When("^je transfère (\\d+,\\d+) (.+) du compte '(.+)' vers le compte '(.+)'$",
@@ -46,7 +43,6 @@ public class TransferStepdefs implements En {
                 (String senderBank, BigDecimal amount, String currency, String destinationAccount) ->
             bank.receiveTransfer(new Amount(amount, Amount.Currency.valueOf(currency)), destinationAccount, senderBank, null));
         Then("^un rejet de l'opération est renvoyé à la banque émettrice '(.*)'$", (String senderBank) -> {
-            LOG.error("messages = {}", bank);
             assertThat(bank.messages())
                     .contains(new OperationMessage(senderBank, MessageStatus.OperationResponse.REJECTED, RejectReason.NO_SUCH_ACCOUNT, null));
         });
