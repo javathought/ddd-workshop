@@ -1,4 +1,4 @@
-package io.github.javathought.clean.bank.model;
+package io.github.javathought.clean.bank.model.accounts;
 
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.messages.MessagesList;
@@ -6,7 +6,7 @@ import io.github.javathought.clean.bank.model.messages.MessageStatus;
 import io.github.javathought.clean.bank.model.messages.OperationMessage;
 import io.github.javathought.clean.bank.model.messages.RejectReason;
 import io.github.javathought.clean.bank.model.operations.TransactionalOperation;
-import io.github.javathought.clean.bank.model.operations.Transfer;
+import io.github.javathought.clean.bank.model.transfer.operations.Transfer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.NoSuchElementException;

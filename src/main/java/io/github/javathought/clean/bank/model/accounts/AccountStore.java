@@ -1,4 +1,4 @@
-package io.github.javathought.clean.bank.model;
+package io.github.javathought.clean.bank.model.accounts;
 
 public interface AccountStore {
     Account put(String accountNumber, Account account);

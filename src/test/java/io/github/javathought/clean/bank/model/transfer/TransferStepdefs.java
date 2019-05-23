@@ -1,13 +1,18 @@
-package io.github.javathought.clean.bank.model;
+package io.github.javathought.clean.bank.model.transfer;
 
 import cucumber.api.java8.En;
+import io.github.javathought.clean.bank.model.accounts.Amount;
+import io.github.javathought.clean.bank.model.accounts.Bank;
+import io.github.javathought.clean.bank.model.accounts.HashMapAccountStore;
+import io.github.javathought.clean.bank.model.TestWorldState;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.messages.MessageStatus;
 import io.github.javathought.clean.bank.model.messages.OperationMessage;
 import io.github.javathought.clean.bank.model.messages.RejectReason;
 import io.github.javathought.clean.bank.model.operations.Operation;
 import io.github.javathought.clean.bank.model.operations.TransactionalOperation;
-import io.github.javathought.clean.bank.model.operations.Transfer;
+import io.github.javathought.clean.bank.model.transfer.operations.Transfer;
+import io.github.javathought.clean.bank.model.transfer.operations.TransferProductor;
 
 import java.math.BigDecimal;
 
@@ -15,12 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransferStepdefs implements En {
 
-    public TransferStepdefs(TestWorldState state, HashMapAccountStore accountStore, Bank bank) {
+    public TransferStepdefs(TestWorldState state, HashMapAccountStore accountStore, Bank bank, TransferProductor transferer) {
         When("^je transfère (\\d+,\\d+) (.+) du compte '(.+)' vers le compte '(.+)'$",
                 (BigDecimal amount, String currency, String originAccount, String destinationAccount) -> {
             try {
-                Transfer tx = accountStore.get(originAccount)
-                        .transfer(new Amount(amount, Amount.Currency.valueOf(currency)), destinationAccount);
+
+                Transfer tx = transferer.transfer(originAccount, destinationAccount, new Amount(amount, Amount.Currency.valueOf(currency)));
+                
                 state.operationAccepted = true;
                 state.currentOperation = tx;
                 state.currentAccount = originAccount;

@@ -1,6 +1,6 @@
 package io.github.javathought.clean.bank.model.operations;
 
-import io.github.javathought.clean.bank.model.Amount;
+import io.github.javathought.clean.bank.model.accounts.Amount;
 
 import java.time.Instant;
 import java.util.Date;
@@ -15,7 +15,7 @@ public abstract class Operation {
     private final Amount amount;
     protected State state;
 
-    Operation(Amount amountValue) {
+    protected Operation(Amount amountValue) {
         assert amountValue != null;
         id = UUID.randomUUID();
         this.date = Date.from(Instant.now());

@@ -1,6 +1,6 @@
 package io.github.javathought.clean.bank.model.operations;
 
-import io.github.javathought.clean.bank.model.Amount;
+import io.github.javathought.clean.bank.model.accounts.Amount;
 
 import static io.github.javathought.clean.bank.model.operations.Operation.State.REVERTED;
 

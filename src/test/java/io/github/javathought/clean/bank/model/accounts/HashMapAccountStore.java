@@ -1,4 +1,4 @@
-package io.github.javathought.clean.bank.model;
+package io.github.javathought.clean.bank.model.accounts;
 
 import java.util.HashMap;
 import java.util.Map;

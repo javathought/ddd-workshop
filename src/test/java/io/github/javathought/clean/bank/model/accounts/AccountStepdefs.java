@@ -1,6 +1,7 @@
-package io.github.javathought.clean.bank.model;
+package io.github.javathought.clean.bank.model.accounts;
 
 import cucumber.api.java8.En;
+import io.github.javathought.clean.bank.model.*;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.operations.Operation;
 import io.github.javathought.clean.bank.model.operations.OperationsList;

@@ -1,8 +1,12 @@
-package io.github.javathought.clean.bank.model;
+package io.github.javathought.clean.bank.model.accounts;
 
+import io.github.javathought.clean.bank.model.accounts.operations.Deposit;
+import io.github.javathought.clean.bank.model.accounts.operations.Withdrawal;
 import io.github.javathought.clean.bank.model.exceptions.OperationRefusedException;
 import io.github.javathought.clean.bank.model.messages.MessageStatus;
 import io.github.javathought.clean.bank.model.operations.*;
+import io.github.javathought.clean.bank.model.transfer.operations.Transfer;
+import io.github.javathought.clean.bank.model.transfer.operations.TransferIncome;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
